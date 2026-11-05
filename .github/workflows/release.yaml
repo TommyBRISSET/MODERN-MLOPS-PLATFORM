@@ -28,7 +28,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for API
         id: meta-api
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ghcr.io/${{ github.repository }}/api
           tags: |
@@ -49,7 +49,7 @@ jobs:
 
       - name: Extract metadata for Pipeline
         id: meta-pipeline
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ghcr.io/${{ github.repository }}/pipeline
           tags: |

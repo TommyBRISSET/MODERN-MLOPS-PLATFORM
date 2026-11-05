@@ -77,7 +77,7 @@ class PredictionStore:
         self._ensure_schema()
         with self._pool.connection() as conn:
             cursor = conn.execute(sql, params)
-            columns = [column.name for column in cursor.description]
+            columns = [column.name for column in cursor.description] if cursor.description else []
             return pd.DataFrame(cursor.fetchall(), columns=columns)
 
     def log_prediction(

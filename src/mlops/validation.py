@@ -75,7 +75,8 @@ def validate(
         F.sum(F.when((F.col(c) < low) | (F.col(c) > high), 1).otherwise(0)).alias(f"range:{c}")
         for c, (low, high) in RANGES.items()
     ]
-    counts = df.agg(*null_exprs, *range_exprs).first().asDict()
+    first_row = df.agg(*null_exprs, *range_exprs).first()
+    counts = first_row.asDict() if first_row is not None else {}
 
     null_rates = {c: counts[f"null:{c}"] / row_count for c in required}
     out_of_range = {c: int(counts[f"range:{c}"]) for c in RANGES}

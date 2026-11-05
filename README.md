@@ -14,6 +14,37 @@ Plateforme MLOps complète, locale, sécurisée et reproductible, bâtie sur les
 
 ---
 
+## 🌐 Accès aux Interfaces & Services Web
+
+Une fois la stack lancée (`docker compose up -d`), les interfaces web suivantes sont accessibles localement :
+
+| Service | URL d'accès | Rôle & Fonctionnalités clés |
+|---|---|---|
+| **🔥 Prometheus** | [http://localhost:9090](http://localhost:9090) | **Serveur de métriques & Alertes** :<br>• Cibles : [http://localhost:9090/targets](http://localhost:9090/targets) (vérifier que `house-price-api` est `UP`)<br>• Alertes : [http://localhost:9090/alerts](http://localhost:9090/alerts)<br>• Graphiques PromQL : [http://localhost:9090/graph](http://localhost:9090/graph) |
+| **📊 Grafana** | [http://localhost:3001](http://localhost:3001) | Tableaux de bord de production (Dashboard pré-provisionné `House Price API`, login `admin` / mdp dans `.env`) |
+| **📈 MLflow** | [http://localhost:5000](http://localhost:5000) | Registre de modèles, artefacts (`model_card.md`), paramètres et métriques d'entraînement |
+| **⚙️ Dagster UI** | [http://localhost:3000](http://localhost:3000) | Visualisation du graphe des assets, lancement de `training_job` et `monitoring_job` |
+| **⚡ Prediction API** | [http://localhost:8000/docs](http://localhost:8000/docs) | Documentation Swagger / OpenAPI interactive (`/predict`, `/feedback`, `/health`, `/ready`) |
+| **📏 Métriques brutes** | [http://localhost:8000/metrics](http://localhost:8000/metrics) | Endpoint de métriques brutes scrapé toutes les 15s par Prometheus |
+
+### 📸 Aperçu de Prometheus en production
+
+Captures d'écran issues de l'instance locale (archivées dans [`docs/screenshots/`](docs/screenshots/)) :
+
+#### 1. Cibles de scraping actives (`/targets`)
+![Prometheus Targets](docs/screenshots/prometheus-targets.png)
+
+#### 2. Règles d'alertes configurées (`/alerts`)
+![Prometheus Alerts](docs/screenshots/prometheus-alerts.png)
+
+### 🔍 Requêtes PromQL utiles dans Prometheus ([http://localhost:9090/graph](http://localhost:9090/graph))
+- `up{job="house-price-api"}` : État de santé de la cible de l'API (1 = joignable).
+- `sum(rate(http_requests_total[1m])) by (route, status)` : Taux de requêtes par seconde par route et code HTTP.
+- `histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket{route="/predict"}[5m])))` : Latence p95 sur `/predict`.
+- `prediction_log_failures_total` : Nombre total d'échecs de persistance en base de données PostgreSQL.
+
+---
+
 ## 📋 Démarrage rapide
 
 ### 1. Configuration de l'environnement
@@ -55,7 +86,7 @@ docker compose exec dagster-daemon dagster job execute -m mlops.orchestration -j
 
 ## 📚 Documentation complète
 
-- [Operations Runbook](docs/RUNBOOK.md) : Guide d'exploitation complet, architecture Mermaid, procédures d'incident (503, dérive, pannes), matrice des ports et accès.
+- [Operations Runbook](docs/RUNBOOK.md) : Guide d'exploitation complet, architecture Mermaid, procédures d'incident (503, dérive, pannes), matrice des ports et captures d'écran.
 
 ---
 

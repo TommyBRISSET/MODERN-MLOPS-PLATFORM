@@ -249,3 +249,19 @@ docker compose exec postgres psql -U app -d monitoring -c \
 | **Grafana** | `3001` | `3000` | `http://localhost:3001` | Tableaux de bord de supervision (Login : `admin` / Password défini dans `.env`) |
 | **Prometheus** | `9090` | `9090` | `http://localhost:9090` | Moteur de collecte de métriques TSDB et gestionnaire d'alertes |
 | **PostgreSQL** | `5432` | `5432` | `localhost:5432` | Base de données relationnelle (`mlflow`, `dagster`, `monitoring`) |
+
+---
+
+## 6. Captures d'écran de la supervision Prometheus
+
+### A. Cibles de scraping actives (`/targets`)
+Vérification que la cible `house-price-api` (`http://api:8000/metrics`) est active et en état `UP` :
+![Prometheus Targets](screenshots/prometheus-targets.png)
+
+### B. Règles d'alertes configurées (`/alerts`)
+État des règles de détection d'incidents (indisponibilité de l'API, absence de champion, latence élevée, échecs d'écriture en base) :
+![Prometheus Alerts](screenshots/prometheus-alerts.png)
+
+### C. Visualisation des métriques & PromQL (`/graph`)
+Évolution des requêtes et latences de l'API :
+![Prometheus Graph](screenshots/prometheus-graph.png)
